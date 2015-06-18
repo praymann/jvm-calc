@@ -13,7 +13,7 @@ TODO:
 Dependences: 
 * Filesize ruby gem
 
-# git clone https://github.com/praymann/jvm-calc/master
+# git clone https://github.com/praymann/jvm-calc.git
 # ???
 # Profit
 
