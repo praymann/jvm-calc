@@ -12,10 +12,10 @@ TODO:
 
 Dependences: 
 * Filesize ruby gem
+  $ gem install filesize
 
-# git clone https://github.com/praymann/jvm-calc.git
-# ???
-# Profit
+Get the repo:
+  $ git clone https://github.com/praymann/jvm-calc.git
 
 ## Usage
 
