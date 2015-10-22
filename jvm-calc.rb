@@ -47,13 +47,13 @@ else
   # NewRatio defines a ratio of old to new, where new gets the smaller portion. So, if we add one to newratio,
   # we get the total number of 'chunks', and NewSize will be equal to one of those chunks.
   # IE:
-  # NewSize = Heap - ( Heap / ( NewRatio + 1 ))
-  hashoutput["NewSize"] = hashoutput["MaxHeapSize"].to_i  - ( hashoutput["MaxHeapSize"].to_i / ( hashoutput["NewRatio"].to_i + 1 ) )
+  # NewSize = ( Heap / ( NewRatio + 1 ))
+  hashoutput["NewSize"] = ( hashoutput["MaxHeapSize"].to_i / ( hashoutput["NewRatio"].to_i + 1 ) )
 
   # OldSize is all but one of the chunks (mentioned above).. so we can just use the same formula but multiply by
   # the NewRatio. IE:
-  # OldSize = Heap - ( Heap / ( NewRatio + 1 ) * NewRatio )
-  hashoutput["OldSize"] = hashoutput["MaxHeapSize"].to_i  - ( hashoutput["MaxHeapSize"].to_i / ( hashoutput["NewRatio"].to_i + 1 ) * hashoutput["NewRatio"].to_i )
+  # OldSize = ( Heap / ( NewRatio + 1 ) * NewRatio )
+  hashoutput["OldSize"] = ( hashoutput["MaxHeapSize"].to_i / ( hashoutput["NewRatio"].to_i + 1 ) * hashoutput["NewRatio"].to_i )
 end
 
 # Eden = NewSize - ((NewSize / ( SurvivorRatio + 2)) * 2)
