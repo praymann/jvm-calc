@@ -37,15 +37,23 @@ output.delete_if { |i| i.match(/product|pdproduct|intx|uintx|pd/) }
 # I like Hash Browns
 hashoutput = Hash[*output]
 
-# Give NewRatio of X, OldSize will always be X times as large as NewSize ( Setting NewSize statically overrides )
+# The JVM's 'NewSize' output only changes if it is statically defined via 'XX:NewSize'; setting NewRatio does
+# not change this. Detect if NewSize is statically defined by checking if it is > the default..
 if hashoutput.include? "NewSize" and hashoutput["NewSize"].to_i > 1572864 
   hashoutput["OldSize"] = hashoutput["MaxHeapSize"].to_i - hashoutput["NewSize"].to_i
 else
-  # NewSize = Heap - (( Heap / ( NewRatio + 2 )) * 2)
-  hashoutput["NewSize"] = hashoutput["MaxHeapSize"].to_i  - ( ( hashoutput["MaxHeapSize"].to_i / ( hashoutput["NewRatio"].to_i + 2 ) ) * 2 )
+  # NewSize is not statically defined, so do math based on NewRatio of X.
 
-  # We know New, Old is simple now
-  hashoutput["OldSize"] = hashoutput["MaxHeapSize"].to_i  - hashoutput["NewSize"].to_i
+  # NewRatio defines a ratio of old to new, where new gets the smaller portion. So, if we add one to newratio,
+  # we get the total number of 'chunks', and NewSize will be equal to one of those chunks.
+  # IE:
+  # NewSize = Heap - ( Heap / ( NewRatio + 1 ))
+  hashoutput["NewSize"] = hashoutput["MaxHeapSize"].to_i  - ( hashoutput["MaxHeapSize"].to_i / ( hashoutput["NewRatio"].to_i + 1 ) )
+
+  # OldSize is all but one of the chunks (mentioned above).. so we can just use the same formula but multiply by
+  # the NewRatio. IE:
+  # OldSize = Heap - ( Heap / ( NewRatio + 1 ) * NewRatio )
+  hashoutput["OldSize"] = hashoutput["MaxHeapSize"].to_i  - ( hashoutput["MaxHeapSize"].to_i / ( hashoutput["NewRatio"].to_i + 1 ) * hashoutput["NewRatio"].to_i )
 end
 
 # Eden = NewSize - ((NewSize / ( SurvivorRatio + 2)) * 2)
